@@ -57,6 +57,27 @@
     .petal-layer{position:absolute;z-index:4;inset:0;overflow:hidden;pointer-events:none}.rose-petal{position:absolute;top:var(--origin-y);left:calc(var(--origin-x) + var(--x));width:var(--size);height:calc(var(--size) * 1.55);border-radius:82% 10% 76% 17%;background:radial-gradient(ellipse at 30% 25%,#edbfc0 0%,#c9676d 42%,#984b52 100%);box-shadow:inset 1px 1px 3px #fff8,0 2px 5px #71545b45;opacity:0;animation:petalFall var(--duration) var(--delay) cubic-bezier(.24,.62,.45,.98) forwards;will-change:transform,opacity}.rose-petal::after{content:'';position:absolute;top:18%;left:48%;width:1px;height:64%;background:#fff8;transform:rotate(-18deg);transform-origin:top}.rose-petal.petal-light{background:radial-gradient(ellipse at 30% 25%,#f7d8d7 0%,#dc8589 44%,#a6555b 100%)}
     @keyframes petalFall{0%{opacity:0;transform:translate3d(0,-14px,0) rotate(0deg) scale(.7)}12%{opacity:.95}70%{opacity:.8}100%{opacity:0;transform:translate3d(var(--drift),var(--fall-distance),0) rotate(var(--spin)) scale(.92)}}
     @media(prefers-reduced-motion:reduce){.page-ready .topbar,.page-ready .hero::after,.page-ready .hero .eyebrow,.page-ready .hero .crescent,.page-ready .hero .hero-copy,.page-ready .hero h1,.page-ready .hero .hero-date,.page-ready .hero .hero-meta,.page-ready .hero .hero-venue,.page-ready .hero .hero-blessing,.page-ready .couple-trigger,.page-ready .scroll-hint,.page-ready .ornament,.closing .amp,.countdown .number.pop,.rose-petal{animation:none!important}.countdown .unit{transition:none}}
+    /* Smooth random float letter styles */
+.giggle-letter {
+  display: inline-block;
+  animation: floatRandom ease-in-out infinite alternate;
+  white-space: pre;
+}
+
+@keyframes floatRandom {
+  0% {
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-6px) translateX(2px) rotate(3deg);
+  }
+  66% {
+    transform: translateY(3px) translateX(-3px) rotate(-2deg);
+  }
+  100% {
+    transform: translateY(-4px) translateX(1px) rotate(2deg);
+  }
+}
   </style>
 </head>
 <body class="page-locked">
@@ -96,7 +117,7 @@
         <figure class="photo-card"><span class="tape" aria-hidden="true"></span><div class="photo-window"><img src="gallery-04.png" alt="Family illustration with a heart"></div><figcaption class="caption">Photo 4</figcaption></figure>
         <figure class="photo-card"><span class="tape" aria-hidden="true"></span><div class="photo-window"><img src="gallery-05.jpg" alt="Person working at a laptop illustration"></div><figcaption class="caption">Photo 5</figcaption></figure>
         <figure class="photo-card"><span class="tape" aria-hidden="true"></span><div class="photo-window"><img src="gallery-06.jpg" alt="Person working at a laptop illustration"></div><figcaption class="caption">Photo 6</figcaption></figure>
-      </div><p class="gallery-note">These gallery images are temporary and can be replaced with your favourite photographs.</p>
+      </div><p class="gallery-note"></p>
     </div></section>
     <section class="location reveal" id="location"><div class="wrap"><div class="center"><p class="kicker">We look forward to seeing you</p><h2 class="section-title">Find your way to us</h2></div>
       <div class="location-grid"><div><p class="kicker">The venue</p><h3 class="section-title" style="font-size:1.85rem;margin:12px 0">The Grand Mountain Hotel</h3><p class="address">73/1 The Grand Mountain Hotel Road<br>Kandy–Jaffna Highway, Matale 20000<br>Sri Lanka<br><br>Reverston Ballroom</p><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=The+Grand+Mountain+Hotel%2C+73%2F1+The+Grand+Mountain+Hotel+Road%2C+Matale+20000%2C+Sri+Lanka" target="_blank" rel="noopener">Open directions in Google Maps ↗</a></div>
@@ -251,6 +272,58 @@
       }), { threshold: .02 });
       galleryPetalObserver.observe(gallerySection);
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+  const title = document.getElementById('intro-title');
+  if (!title) return;
+
+  function processNodes(node) {
+    const childNodes = Array.from(node.childNodes);
+
+    childNodes.forEach(child => {
+      if (child.nodeType === Node.TEXT_NODE) {
+        const text = child.textContent;
+        const fragment = document.createDocumentFragment();
+
+        for (let char of text) {
+          const span = document.createElement('span');
+          span.className = 'giggle-letter';
+          span.textContent = char;
+          
+          // Speed එක ගොඩක් slow කළා (තත්පර 4.5 සිට 6.5 දක්වා)
+          const randomDelay = (Math.random() * 3).toFixed(2);
+          const randomDuration = (4.5 + Math.random() * 2).toFixed(2);
+          
+          span.style.animationDelay = `${randomDelay}s`;
+          span.style.animationDuration = `${randomDuration}s`;
+          
+          fragment.appendChild(span);
+        }
+        child.replaceWith(fragment);
+      } else if (child.nodeType === Node.ELEMENT_NODE) {
+        if (child.tagName === 'BR') return;
+        
+        const text = child.textContent;
+        child.innerHTML = '';
+        for (let char of text) {
+          const span = document.createElement('span');
+          span.className = 'giggle-letter';
+          span.textContent = char;
+          
+          const randomDelay = (Math.random() * 3).toFixed(2);
+          const randomDuration = (4.5 + Math.random() * 2).toFixed(2);
+          
+          span.style.animationDelay = `${randomDelay}s`;
+          span.style.animationDuration = `${randomDuration}s`;
+          
+          child.appendChild(span);
+        }
+      }
+    });
+  }
+
+  processNodes(title);
+});
   </script>
 </body>
 </html>
